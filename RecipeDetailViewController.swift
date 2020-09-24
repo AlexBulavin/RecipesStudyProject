@@ -20,22 +20,16 @@ class RecipeDetailViewController: UIViewController {
     @IBOutlet var backButton: UINavigationItem!
     
     
-    var recipeImageName = ""
-    var recipeName = ""
-    var recipeDescription = ""
-    var ingredients = ""
-    var recipeIsLiked = true
-    var indexPathRowDetail = 0
-    
+    var recipe = Recipes()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        recipeImageView.image = UIImage(named: recipeImageName)
-        recipeNameLabel.text = recipeName
-        recipeDescriptionLabel.text = recipeDescription
-        ingredientsLabel.text = ingredients
-        recipeFaviritesIndicator.isHidden = !recipeIsLiked //isHidden противоположно по значению recipeIsLiked. То есть если isHidden = true, то имидж не должен отображаться, а если false, то должен. Но в переменной recipeIsLiked true означает Liked и имидж нужно показать, а false означает не Liked и нужно скрыть.
+        recipeImageView.image = UIImage(named: recipe.recipeImages)
+        recipeNameLabel.text = recipe.recipeNames
+        recipeDescriptionLabel.text = recipe.recipeDescription
+        ingredientsLabel.text = recipe.recipeIngredients
+        recipeFaviritesIndicator.isHidden = !recipe.recipeIsLiked //isHidden противоположно по значению recipeIsLiked. То есть если isHidden = true, то имидж не должен отображаться, а если false, то должен. Но в переменной recipeIsLiked true означает Liked и имидж нужно показать, а false означает не Liked и нужно скрыть.
         
         navigationItem.largeTitleDisplayMode = .never // Для того, чтобы navigation bar title был всегда маленький и не перегружал внимание пользователя
     }
@@ -62,12 +56,12 @@ class RecipeDetailViewController: UIViewController {
          optionMenu.addAction(callAction)
         
         // Добавить/убрать в избранное
-        let checkInTitle = self.recipeIsLiked ? "Удалить из избранноого" : "Добавить в избранное"
+        let checkInTitle = self.recipe.recipeIsLiked ? "Удалить из избранноого" : "Добавить в избранное"
         let checkInAction = UIAlertAction(title: checkInTitle, style: .default, handler: {
             (action:UIAlertAction!) -> Void in
 
-            self.recipeFaviritesIndicator.isHidden = self.recipeIsLiked
-            self.recipeIsLiked = self.recipeIsLiked ? false : true 
+            self.recipeFaviritesIndicator.isHidden = self.recipe.recipeIsLiked
+            self.recipe.recipeIsLiked = self.recipe.recipeIsLiked ? false : true
 //            let parentVC = (self.navigationController?.parent)! as! RecipesTableViewController
 //            parentVC.recipeIsLiked[self.indexPathRowDetail] = !self.recipeIsLiked
 
@@ -75,11 +69,28 @@ class RecipeDetailViewController: UIViewController {
         
         optionMenu.addAction(checkInAction)
         
+        //Add Share recipe action. Делимся рецептом с друзьями.
+        let shareRecipeAction = UIAlertAction(title: "Поделиться", style: .default, handler: {
+            (action:UIAlertAction!) -> Void in
+
+            let defaultText = "Рекомендую попробовать:" + "\n" + self.recipe.recipeNames + "\n" + "Кухня: " + self.recipe.recipeType + "\n" + "Автор рецепта: " + self.recipe.recipeAuthorLocations + "\n" + "Способ приготовления: " + "\n" + self.recipe.recipeDescription + "\n\n" + "Состав блюда:" + "\n" + self.recipe.recipeIngredients + "\n\n" + "Рецепт доступен в мобильном приложении:" + "\n" + "https://apps.apple.com/ru/app/ready-for-sky/id927991375" + "\n\n" + "https://play.google.com/store/apps/details?id=com.readyforsky"
+                    
+                    let activityController: UIActivityViewController
+                    
+                    if let defaultPicture = UIImage(named: self.recipe.recipeImages)
+                    { activityController = UIActivityViewController(activityItems: [ defaultText, defaultPicture], applicationActivities: nil) }
+                    else
+                    { activityController = UIActivityViewController(activityItems: [ defaultText], applicationActivities: nil) }
+                                
+                    self.present(activityController, animated: true, completion: nil)
+      
+        })
+        optionMenu.addAction(shareRecipeAction)
+        
          //Add cancel action
          let cancelAction = UIAlertAction(title: "Отмена", style: .cancel, handler: nil)
          
          optionMenu.addAction(cancelAction)
-         
          
          // Display the menu
          present(optionMenu, animated: true, completion: nil)
