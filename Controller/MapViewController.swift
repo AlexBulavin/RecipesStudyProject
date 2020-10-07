@@ -56,9 +56,23 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        navigationController?.hidesBarsOnSwipe = true
+
         
         UIApplication.shared.statusBarStyle = .darkContent
+        
+
+        self.navigationController!.navigationBar.tintColor = UIColor.black;
+        
+    }
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        
+        UIApplication.shared.statusBarStyle = .lightContent
+        
+        self.navigationController!.navigationBar.tintColor = UIColor.white;
+
+        
     }
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
@@ -74,4 +88,6 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         annotationView?.markerTintColor = UIColor.orange
         return annotationView
     }
+    
+    
 }
