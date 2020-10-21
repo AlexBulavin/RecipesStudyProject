@@ -13,8 +13,73 @@ class RecipeDetailViewController: UIViewController, UITableViewDataSource, UITab
     
     @IBOutlet var tableView: UITableView!
     @IBOutlet var headerView: RecipeDetailHeaderView!
-    
+    @IBAction func close(segue:UIStoryboardSegue){
+        dismiss(animated: true, completion: nil)
+    }
+    var ratingChanged = "No rating yet"
     var recipe = Recipes()
+
+    @IBOutlet var rateIt2: UIButton!
+    @IBAction func rateRecipe(segue: UIStoryboardSegue) {
+        dismiss(animated: true, completion: { [self] in
+            if let rating = segue.identifier {
+            print(rating)
+            switch rating {
+                case "zero":
+                ratingChanged = "⭐︎⭐︎⭐︎⭐︎⭐︎"
+                    print(ratingChanged)
+                    recipe.recipeRating = ratingChanged
+                    rateIt2.setTitle(ratingChanged, for: .normal)
+                return
+                    
+                case "one":
+                ratingChanged = "★⭐︎⭐︎⭐︎⭐︎"
+                    self.recipe.recipeRating = ratingChanged
+                    print(recipe.recipeRating)
+                    rateIt2.setTitle(ratingChanged, for: .normal)
+                return
+
+                case "two":
+                ratingChanged = "★★⭐︎⭐︎⭐︎"
+                    self.recipe.recipeRating = ratingChanged
+                    print(recipe.recipeRating)
+                    rateIt2.setTitle(ratingChanged, for: .normal)
+                return
+
+                case "tree":
+                ratingChanged = "★★★⭐︎⭐︎"
+                    self.recipe.recipeRating = ratingChanged
+                    print(recipe.recipeRating)
+                    rateIt2.setTitle(ratingChanged, for: .normal)
+                return
+
+                case "four":
+                ratingChanged = "★★★★⭐︎"
+                    self.recipe.recipeRating = ratingChanged
+                    print(recipe.recipeRating)
+                    rateIt2.setTitle(ratingChanged, for: .normal)
+                return
+
+                case "five":
+                ratingChanged = "★★★★★"
+                    self.recipe.recipeRating = ratingChanged
+                    print(recipe.recipeRating)
+                    rateIt2.setTitle(ratingChanged, for: .normal)
+                return
+
+                default:
+                ratingChanged = "No rating yet"
+                    self.recipe.recipeRating = ratingChanged
+                    print(recipe.recipeRating)
+                    rateIt2.setTitle(ratingChanged, for: .normal)
+                return
+            }
+
+        }
+        })
+    }
+    
+    
     
     // MARK: - Detail View controller life cycle
     override func viewDidLoad() {
@@ -53,7 +118,7 @@ class RecipeDetailViewController: UIViewController, UITableViewDataSource, UITab
         
         navigationController?.hidesBarsOnSwipe = false
         navigationController?.setNavigationBarHidden(false, animated: true)
-        
+        rateIt2.setTitle(recipe.recipeRating, for: .normal)
     }
     
     
@@ -198,7 +263,9 @@ class RecipeDetailViewController: UIViewController, UITableViewDataSource, UITab
                 backItem.title = "Recipe book"
                 navigationItem.backBarButtonItem = backItem // This will show in the next view controller being pushed
             
-            
+        } else if segue.identifier == "rateIt" || segue.identifier == "rateIt2" {
+            let destinationController = segue.destination as! RateViewController
+            destinationController.recipe = recipe
         }
     }
 }
